@@ -14,11 +14,6 @@ export class CategoryService {
     return await createdCat.save();
   }
 
-  // TODO UPDTATE
-  // TODO DELETE
-  // TODO SORT
-  // TODO FILTER
-
   async findOne(id: any): Promise<Category[]> {
     return await this.categoryModel.findById(id);
   }
