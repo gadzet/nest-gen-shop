@@ -13,4 +13,7 @@ export class ConfigService {
   get(key: string): string {
     return this.envConfig[key];
   }
+  get getSecret(): string {
+    return String(this.envConfig.SECRET);
+  }
 }

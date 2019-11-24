@@ -3,18 +3,10 @@ import { RoleService } from "./roles.service";
 import { RoleType } from "./types/create-role.dto";
 import { RoleInput } from "./types/role.input";
 import { Arg, ObjectType, Field, Int, ID, InputType  } from "type-graphql";
-
-
-// TODO move to common/shared module
-@InputType()
-export class SortObjectType5 {
-    @Field(() => String)
-    readonly name: string;
-}
-// TODO move to common/shared interface
-export interface SortObjectType5  extends Document {
-    readonly name: string;
-}
+import { SortObjectType } from "../shared/types/interface";
+import { SortObjectTypeDTO } from "../shared/types/dto";
+import { UseGuards } from "@nestjs/common";
+import { AuthGuard } from "../shared/auth.guard";
 
 @Resolver(of => RoleType)
 export class RoleResolver {
@@ -25,12 +17,12 @@ export class RoleResolver {
   async ping() {
       return 'pong';
   }
-
+  @UseGuards(AuthGuard)
   @Query(() => [RoleType])
   async roles(
       @Args({ name : 'pageSize', type: () => Number, nullable: true }) pageSize?: number,
       @Args({ name : 'pageNumber', type: () => Number, nullable: true }) pageNumber?: number,
-      @Args({ name : 'sortObject', type: () => SortObjectType5, nullable: true }) sortObject?: SortObjectType5,
+      @Args({ name : 'sortObject', type: () => SortObjectTypeDTO, nullable: true }) sortObject?: SortObjectType,
       ) {
       return this.roleService.findChunk(pageSize * pageNumber, pageSize, sortObject);
   }
@@ -55,11 +47,4 @@ export class RoleResolver {
     async deleteRole(@Args('id') id: string) {
     return this.roleService.delete(id);
   }
-/*
-  @ResolveProperty()
-  async category(@Parent() product) {
-    const { categoryId } = product;
-    //return await this.categoryService.findOne(categoryId);
-  }*/
-
 }

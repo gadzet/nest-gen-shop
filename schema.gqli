@@ -95,7 +95,7 @@ type Query {
   category(id: String!): CategoryType!
   users(sortObject: SortObjectType3, pageNumber: Float, pageSize: Float): [UserType!]!
   user(id: String!): UserType!
-  roles(sortObject: SortObjectType5, pageNumber: Float, pageSize: Float): [RoleType!]!
+  roles(sortObject: SortObjectTypeDTO, pageNumber: Float, pageSize: Float): [RoleType!]!
   role(id: String!): RoleType!
 }
 
@@ -122,7 +122,7 @@ input SortObjectType3 {
   name: String!
 }
 
-input SortObjectType5 {
+input SortObjectTypeDTO {
   name: String!
 }
 
