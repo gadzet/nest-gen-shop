@@ -66,6 +66,9 @@ type Mutation {
   updateUser(input: UserInput!, id: String!): UserType!
   deleteUser(id: String!): UserType!
   login(password: String!, email: String!): UserType!
+  addRole(input: RoleInput!): RoleType!
+  updateRole(input: RoleInput!, id: String!): RoleType!
+  deleteRole(id: String!): RoleType!
 }
 
 input ProductInput {
@@ -92,6 +95,19 @@ type Query {
   category(id: String!): CategoryType!
   users(sortObject: SortObjectType3, pageNumber: Float, pageSize: Float): [UserType!]!
   user(id: String!): UserType!
+  roles(sortObject: SortObjectType5, pageNumber: Float, pageSize: Float): [RoleType!]!
+  role(id: String!): RoleType!
+}
+
+input RoleInput {
+  userId: String!
+  role: String!
+}
+
+type RoleType {
+  id: ID!
+  userId: String!
+  role: String!
 }
 
 input SortObjectType {
@@ -103,6 +119,10 @@ input SortObjectType2 {
 }
 
 input SortObjectType3 {
+  name: String!
+}
+
+input SortObjectType5 {
   name: String!
 }
 

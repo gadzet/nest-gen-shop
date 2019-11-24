@@ -3,7 +3,6 @@ import { RoleService } from "./roles.service";
 import { RoleType } from "./types/create-role.dto";
 import { RoleInput } from "./types/role.input";
 import { Arg, ObjectType, Field, Int, ID, InputType  } from "type-graphql";
-import { CategoryService } from "../category/category.service";
 
 
 // TODO move to common/shared module

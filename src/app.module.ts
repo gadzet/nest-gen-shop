@@ -8,6 +8,7 @@ import { CategoryService } from './category/category.service';
 import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from './config/config.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -15,15 +16,16 @@ import { ConfigModule } from './config/config.module';
     CategoryModule,
     UserModule,
     ConfigModule,
+    RolesModule,
     GraphQLModule.forRoot({
       debug: false, // todo use process env
       playground: true,
       autoSchemaFile: 'schema.gqli',
-      context: ({req}) => ({headers: req.headers}),
+      context: ({ req }) => ({ headers: req.headers }),
     }),
     MongooseModule.forRoot('mongodb://localhost/nest'),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
