@@ -9,6 +9,10 @@ import { CategoryModule } from './category/category.module';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from './config/config.module';
 import { RolesModule } from './roles/roles.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from './auth/auth.module';
+import { SharedModule } from './shared/shared.module';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -26,6 +30,9 @@ import { RolesModule } from './roles/roles.module';
     MongooseModule.forRoot('mongodb://localhost/nest'),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    AuthService
+  ],
 })
 export class AppModule { }

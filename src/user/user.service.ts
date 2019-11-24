@@ -58,15 +58,12 @@ export class UserService {
     const { email, password } = data;
     const user = await this.userModel.findOne({email}).exec();    
     const { _id } = user;
-    console.log('uzer', user);
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new HttpException(
         'Invalid username/password',
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    console.log('bf tokenized', _id);
     // check max tut
     user.token = jwt.sign(
       {
@@ -76,7 +73,6 @@ export class UserService {
       this.configService.get('SECRET'),
       { expiresIn: '7d' },
     );
-    console.log('tokenized', user);
     return user;
   }
 }

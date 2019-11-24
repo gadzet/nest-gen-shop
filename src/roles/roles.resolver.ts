@@ -7,6 +7,7 @@ import { SortObjectType } from "../shared/types/interface";
 import { SortObjectTypeDTO } from "../shared/types/dto";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../shared/auth.guard";
+import { Auth } from "../shared/auth.decorator";
 
 @Resolver(of => RoleType)
 export class RoleResolver {
@@ -18,6 +19,7 @@ export class RoleResolver {
       return 'pong';
   }
   @UseGuards(AuthGuard)
+  @Auth('admin')
   @Query(() => [RoleType])
   async roles(
       @Args({ name : 'pageSize', type: () => Number, nullable: true }) pageSize?: number,
@@ -30,6 +32,11 @@ export class RoleResolver {
   @Query(() => RoleType)
   async role(@Args({ name : 'id', type: () => String }) id: string) {
       return this.roleService.findOne(id);
+  }
+  
+  @Query(() => RoleType)
+  async userRoles(@Args({ name : 'userId', type: () => String }) userId: string) {
+      return this.roleService.find({ userId });
   }
 
   // TODO create timestamp

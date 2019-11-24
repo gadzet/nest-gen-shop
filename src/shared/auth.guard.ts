@@ -1,40 +1,47 @@
 import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import * as jwt  from 'jsonwebtoken';
-import { ConfigService } from '../config/config.service';
+import { AuthService } from '../auth/auth.service';
+import { Reflector } from '@nestjs/core';
+import { RoleService } from '../roles/roles.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private config: ConfigService) {}
+    private ctx: any;
+    private roles: string [];
+    private request: any;
+    private isAuthorized: boolean = false;
+
+    constructor(
+        private readonly reflector: Reflector,
+        private authService: AuthService,
+        private roleService: RoleService
+        ) {}
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        if(request) {
-            console.log('request', request);
-            if(!request.headers.authorization) {
+        this.request = context.switchToHttp().getRequest();
+        this.roles = this.reflector.get<string[]>('roles', context.getHandler());
+        if(this.request) {
+            if(!this.request.headers.authorization) {
                 return false;
             }
-            request.user = await this.validateToken(request.headers.authorization);
+            this.request.user = await this.authService.validateToken(this.request.headers.authorization);
+            if (!this.roles) {
+                return true;
+            }
             return true;
         } else {
-            const ctx: any = GqlExecutionContext.create(context).getContext();
-            if(!ctx.headers.authorization) {
+            this.ctx = GqlExecutionContext.create(context).getContext();
+            if(!this.ctx.headers.authorization) {
                 return false;
             }
-            ctx.user = await this.validateToken(ctx.headers.authorization); 
-            return true;
+            this.ctx.user = await this.authService.validateToken(this.ctx.headers.authorization); 
+
+            if (!this.roles) {
+                return true;
+            } else {
+                const userRoles = await this.roleService.findRolesByUserId(this.ctx.user._id);
+                this.isAuthorized = this.roles.some((role) => userRoles.includes(role));
+                return this.isAuthorized;
+            }
         }
     }
-
-    async validateToken(auth: string) {        
-        if(auth.split(' ')[0] !== 'Bearer') {
-            throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
-        }
-        const token = auth.split(' ')[1];
-        try {
-            return await jwt.verify(token, this.config.getSecret);
-        } catch (err) {
-            throw new HttpException(`Token error: ${err.message || err.name}`, HttpStatus.FORBIDDEN);
-        }
-    }
-
 }

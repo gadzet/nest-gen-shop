@@ -1,15 +1,7 @@
 import { Module } from '@nestjs/common';
-import { UserService } from '../user/user.service';
-import { RolesGuard } from './roles.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { AuthService } from '../auth/auth.service';
 
 @Module({
-    providers: [
-        UserService,
-        {
-            provide: APP_GUARD,
-            useClass: RolesGuard,
-        },
-    ],
+    providers: [AuthService],
 })
-export class UserModule {}
+export class SharedModule {}

@@ -97,6 +97,7 @@ type Query {
   user(id: String!): UserType!
   roles(sortObject: SortObjectTypeDTO, pageNumber: Float, pageSize: Float): [RoleType!]!
   role(id: String!): RoleType!
+  userRoles(userId: String!): RoleType!
 }
 
 input RoleInput {

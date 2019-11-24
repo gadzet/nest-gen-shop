@@ -29,6 +29,11 @@ export class RoleService {
     return await this.roleModel.find(searchParams).exec();
   }
 
+  async findRolesByUserId(userId: string): Promise<any[]> {
+    const roles = await this.roleModel.find({userId}).exec();
+    return roles.map(obj => obj.role);
+  }
+
   async findChunk(skip: number, limit: number, sort: any): Promise<Role[]> {
         return await this.roleModel
                                     .find()
